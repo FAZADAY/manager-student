@@ -1,58 +1,129 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <h1>Quản lí sinh viên</h1>
+    <Student :itemEdit="hocsinh" @save="clickSave" />
+      <form action="" class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Tên</th>
+              <th>Tuổi</th>
+              <th>Số điện thoại</th>
+              <th>Địa chỉ</th>
+              <th>Chức năng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in list" :key="item.id">
+              <th>{{item.id}}</th>       
+              <th>{{item.name}}</th>
+              <th>{{item.age}}</th>
+              <th>{{item.phone}}</th>
+              <th>{{item.address}}</th>
+              <th>
+                <td><input type="button" value="Edit" @click="clickEdit(item)"></td>
+                <td> <input type="button" value="Delete" @click="clickDelete(item)"></td>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </form>
   </div>
 </template>
 
 <script>
+import Student from "./Student.vue"
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  components: {
+    Student: Student
+  },
+  methods: {
+    clickSave(itemSave){
+        let index = this.list.findIndex((c)=>c.id === itemSave.id)
+        if(index >= 0) {
+          this.list.splice(index,1,itemSave)
+        }else{
+          let max = 0;
+          let newId = 0;
+          for(let i = 0; i < this.list.length; i++){
+            if(this.list[i].id > max){
+              max = this.list[i].id
+            }
+          }
+          newId = max + 1;
+          itemSave.id = newId
+          this.list.push(itemSave)
+        }
+        return;
+    },
+    clickEdit(itemEdit){
+      this.hocsinh  = itemEdit
+      console.log(itemEdit)
+    },
+    clickDelete(itemDelete){
+      for(var i=0; i < this.list.length; i++){
+        if(itemDelete.id === this.list[i].id){
+          this.list.splice(i,1)
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      hocsinh: {
+
+      },
+      list: [
+        {
+          id: 1,
+          name: "Vu Huy H",
+          age: "22",
+          phone: 54465,
+          address: "HD"
+        },
+           {
+          id: 2,
+          name: "Nguyen Van A",
+          age: "32",
+          phone: 76576,
+          address: "HN"
+        },
+           {
+          id: 3,
+          name: "Pham van B",
+          age: "25",
+          phone: 5654654,
+          address: "HCM"
+        },
+           {
+          id: 4,
+          name: "Nguyen Dinh C",
+          age: "12",
+          phone: 4354,
+          address: "HP"
+        },
+ 
+      ]
+    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+    form{
+      margin: auto;
+      width: 40%;
+      text-align: center;     
+    }
+  
+    table, th, td {
+      padding: 10px 20px;
+      border: 1px solid;
+    }
+    input[type="button"] {
+      display: inline-block;
+      cursor: pointer;
+      padding: 10 20px;
+    }
 </style>
